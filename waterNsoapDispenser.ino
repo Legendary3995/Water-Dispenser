@@ -1,75 +1,77 @@
-#include<Servo.h>
+#define MOTOR_SOAP 13
+#define MOTOR_WATER 12
 
 #define LED 10
+#define LED_S 11
 #define TRIG 8
 #define ECHO 9
-#define SERVO 13
-#define LOWER_RANGE 8
-#define UPPER_RANGE 15
+#define LOWER_RANGE 50
+#define UPPER_RANGE 100
 
-#define LED_S 11
-#define TRIG_S 6
-#define ECHO_S 7
-#define SERVO_S 12
-#define LOWER_RANGE_S 0
-#define UPPER_RANGE_S 7
 
 long duration = 0, duration_s = 0;
 int distance = 0, distance_s = 0;
-Servo dispenser;
-Servo soap;
-
+short int delayOnce = 0, delayCount = 0, handAway = 15;
 void setup(){
 	pinMode(LED, OUTPUT);
+  	pinMode(LED_S, OUTPUT);
   	pinMode(TRIG, OUTPUT);
   	pinMode(ECHO, INPUT);
-  	dispenser.attach(SERVO);
-  	dispenser.write(0);
-  
-  	pinMode(LED_S, OUTPUT);
-  	pinMode(TRIG_S, OUTPUT);
   	pinMode(ECHO, INPUT);
-	soap.attach(SERVO_S);
-  	soap.write(0);
-  
+  	digitalWrite(MOTOR_SOAP, LOW);
+  	digitalWrite(MOTOR_WATER, LOW);
   	Serial.begin(9600);
 }
 
 void loop(){
+  
   digitalWrite(TRIG, LOW);
   delayMicroseconds(2);
   digitalWrite(TRIG, HIGH);
   delayMicroseconds(10);
   digitalWrite(TRIG, LOW);
   duration = pulseIn(ECHO, HIGH);
-  distance = duration * 0.034 / 2;
-  if(distance >= LOWER_RANGE && distance <= UPPER_RANGE){
-  		digitalWrite(LED, HIGH);
-    	dispenser.write(90);
-    	Serial.println("Water Activated!");
-    	Serial.println(distance);
-    	delay(500);
+  
+  distance = duration * 0.034 / 2; 
+  
+  if((distance > LOWER_RANGE && distance < UPPER_RANGE) || handAway < 5){
+    if (distance > LOWER_RANGE && distance < UPPER_RANGE){
+    	handAway = 0;
+    }else{handAway++;}
+    Serial.println("Correct!!");
+    delayCount++;
+    if (delayCount <= 2){
+    	Serial.println("Abhi Soap Chalega!");
+      	digitalWrite(MOTOR_SOAP, HIGH);
+      	digitalWrite(LED_S, HIGH);
+      	delay(1000);
+    }
+    else if(delayCount <=4){delay(1000);}
+    else if (delayCount <= 22){
+    	Serial.println("Ab Water Chalega!");
+      	digitalWrite(MOTOR_WATER, HIGH);
+      	digitalWrite(LED, HIGH);
+      	delay(1000);
+    }else{
+      delayCount = 0;
+      delay(2000);
+    }
+  }else{
+    if (handAway < 20){
+      if (!(handAway < 10)){
+        delayCount = 0;
+      }else{
+        delay(1000);
+      }
+      handAway++;
+    }
   }
   
-  digitalWrite(TRIG_S, LOW);
-  delayMicroseconds(2);
-  digitalWrite(TRIG_S, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(TRIG_S, LOW);
-  duration_s = pulseIn(ECHO_S, HIGH);
-  distance_s = duration_s * 0.034 / 2;
-  if(distance_s > LOWER_RANGE_S && distance_s <= UPPER_RANGE_S){
-  	digitalWrite(LED_S, HIGH);
-    soap.write(90);
-    Serial.println("Soap Activated!");
-    Serial.println(distance_s);
-    delay(500);
-  }
   
-    soap.write(0);
+  	digitalWrite(MOTOR_SOAP, LOW);
     digitalWrite(LED_S, LOW);
-  	delay(1000);
   
-  	dispenser.write(0);
+  	digitalWrite(MOTOR_WATER, LOW);
   	digitalWrite(LED, LOW);
+  
 }
