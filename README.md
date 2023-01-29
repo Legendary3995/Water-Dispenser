@@ -14,6 +14,6 @@ Here The soap would be dispensed in intervals, spaces by a second.
 
 > To view the circuit simulation design of this project, Click on the below image.
 
-<a href="https://www.tinkercad.com/things/dIbO9YKYrOP-automatic-water-and-soap-dispenser" target='blank'>
-  <img src="https://user-images.githubusercontent.com/97667653/212715178-7bdd695f-3d05-4d7b-9a97-e16a57489aae.png" alt="circuit simulation image">
+<a href="https://www.tinkercad.com/things/fZ1HxO8iTYa" target='blank'>
+  <img src="https://i.ibb.co/Y0mjgyV/Screenshot-2023-01-29-221058.jpg" alt="circuit simulation image">
 </a>
